@@ -1,8 +1,9 @@
 @import play.api.libs.json.JsValue
-@(message: JsValue )
+@import play.api.libs.json.JsResult
+@(payload: String )
 
 @main("Welcome to Play") {
 
-    @message
+    @payload
 
 }
