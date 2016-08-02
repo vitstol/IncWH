@@ -2,6 +2,7 @@ package controllers
 
 
 
+import akka.event.slf4j.Logger
 import com.fasterxml.jackson.databind.JsonNode
 import com.google.inject.Inject
 import play.api.libs.json
@@ -9,8 +10,10 @@ import play.api.libs.json.{JsError, JsResult, JsValue, Json}
 import play.api.mvc._
 import play.api.libs.ws.{WSAuthScheme, WSClient, WSRequest, WSResponse}
 
+import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{Await, Future}
+import scala.language.postfixOps
 
 class Application @Inject() (ws: WSClient) extends Controller {
   val URL_SLACK_ROOM = "https://hooks.slack.com/services/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"
@@ -20,17 +23,16 @@ class Application @Inject() (ws: WSClient) extends Controller {
 
   def getSessionKey: Future[String] = {
     ws.url(URL_SESSION_KEY).post(PAYLOAD_FORARGUMENTS).map { request =>
-      val parts = request.body.split(",")
-      val sessionKey = parts.filter(_.contains("SessionKey"))
-      val sessionValue = sessionKey.toList.toString().substring(19, 55)
-      sessionValue
+      val parts:Array[String] = request.body.split(",")
+      val sessionKey:Option[String] = parts.find(_.contains("SessionKey"))
+      sessionKey.getOrElse("")
     }
   }
 
-  val someval = getSessionKey.value.get
+  Logger.debug("snth")
 
 
-  val URL_GET_ARGUMENTS = "http://testapi.monitorIT247.com/api/monitors?sessionKey=" +"" + "&id=557&idType=M"
+  val URL_GET_ARGUMENTS = "http://testapi.monitorIT247.com/api/monitors?sessionKey=" +""+ "&id=557&idType=M"
 
   val PAYLOAD_FORARGUMENTS = Json.obj(
     "Name" -> "Eugene Malysh",
@@ -84,3 +86,5 @@ class Application @Inject() (ws: WSClient) extends Controller {
 
 }
 
+//      val sessionValue = sessionKey.toList.toString().substring(19, 55)
+//      sessionValue
