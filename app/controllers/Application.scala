@@ -1,90 +1,47 @@
 package controllers
 
-
-
-import akka.event.slf4j.Logger
-import com.fasterxml.jackson.databind.JsonNode
 import com.google.inject.Inject
-import play.api.libs.json
-import play.api.libs.json.{JsError, JsResult, JsValue, Json}
+import play.api.libs.json._
 import play.api.mvc._
-import play.api.libs.ws.{WSAuthScheme, WSClient, WSRequest, WSResponse}
+import play.api.libs.ws.WSClient
 
-import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.{Await, Future}
+import scala.concurrent._
 import scala.language.postfixOps
+import scala.util.parsing.json.JSONArray
 
 class Application @Inject() (ws: WSClient) extends Controller {
   val URL_SLACK_ROOM = "https://hooks.slack.com/services/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"
-
   val URL_SESSION_KEY = "http://testapi.monitorIT247.com/api/clientsessions"
-
-
-  def getSessionKey: Future[String] = {
-    ws.url(URL_SESSION_KEY).post(PAYLOAD_FORARGUMENTS).map { request =>
-      val parts:Array[String] = request.body.split(",")
-      val sessionKey:Option[String] = parts.find(_.contains("SessionKey"))
-      sessionKey.getOrElse("")
-    }
-  }
-
-  Logger.debug("snth")
-
-
-  val URL_GET_ARGUMENTS = "http://testapi.monitorIT247.com/api/monitors?sessionKey=" +""+ "&id=557&idType=M"
-
   val PAYLOAD_FORARGUMENTS = Json.obj(
     "Name" -> "Eugene Malysh",
     "Password" -> "Eugene Malysh",
     "SessionType" -> "WordPressPlugin"
   )
 
+  def futureResponse(sessionKey:String) = {
+    val url1 = "http://testapi.monitorIT247.com/api/monitors?sessionKey=" + sessionKey + "&id=557&idType=M"
+    ws.url(url1).get().map { request =>
+      val fullResponse:JsValue = Json.parse(request.body)
+      val advicePrev = fullResponse \\ "advice"
+      val advice = advicePrev.head.toString()
+      val Payload = Json.obj(
+        "channel"->"@vitaliys",
+        "text"->"<advice>",
+        "username"->"webhookbot"
+      )
 
-  val PAYLOAD = {
-    """{"channel": "@vitaliys","advice":"html","text": "Test message \n <https://slack.com|Slack main page>","username": "webhookbot","icon_emoji":":ghost:"}"""
+      ws.url(URL_SLACK_ROOM).post(Payload)
+    }
   }
 
-
-  //  def getSessionKey = Action.async {
-  //    ws.url(URL_SESSION_KEY).post(PAYLOAD_FORARGUMENTS).map{ request =>
-  //      val parts =   request.body.split(",")
-  //      val sessionKey = parts.filter(_.contains("SessionKey"))
-  //      val sessionValue = sessionKey.toList.toString().substring(19,55)
-  //      Ok(sessionValue)
-  //    }
-  //  }
-
-
-
-
-
-
-
-    def getArguments = Action.async {
-      ws.url(URL_GET_ARGUMENTS).get().map { request =>
-        //      val fullResponse:JsValue = Json.parse(request.body)
-        //      val advice = (fullResponse \ "advice").get
-        Ok(request.body)
-      }
+  def getArguments = Action.async {
+    ws.url(URL_SESSION_KEY).post(PAYLOAD_FORARGUMENTS).map { request =>
+      val parts: Array[String] = request.body.split(",")
+      val sessionKey: Option[String] = parts.find(_.contains("SessionKey"))
+      futureResponse(sessionKey.getOrElse("").substring(14, 50))
+      Ok("")
     }
-
-
-
-    // val futureResponse: Future[WSResponse] = ws.url(service.URL_SLACK_ROOM).post(service.PAYLOAD)
-
-
-    //  def index() = Action.async {
-    //
-    //   ws.url(service.URL_SLACK_ROOM).get().map{request=>
-    //   Ok(request.body)
-    //
-    // ws.url(URL_GET_ARGUMENTS).get().map(response=>
-    // Ok(response.body))
-    //
-    //
-
+  }
 }
 
-//      val sessionValue = sessionKey.toList.toString().substring(19, 55)
-//      sessionValue
