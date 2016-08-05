@@ -1,0 +1,27 @@
+{
+   "series":[
+      {
+         "type":"map",
+         "name":"World",
+         "data":[
+            {"hc-key":"au","value":27.5,"color":"#DD4640"},{"hc-key":"us","value":46.5217,"color":"#FFCC33"}
+         ],
+         "mapData":Highcharts.maps['custom/world'],
+         "joinBy":"hc-key",
+      }
+   ],
+   "plotOptions":{
+      "series":{
+         "dataLabels":{
+            "enabled":true,
+            "formatter":function() { return (this.point.value !== null) ? this.point.name : null; },
+            "style":{
+               "color":"black"
+            }
+         }
+      },
+   },
+//   "yAxis":{
+//      "reversed":true,
+//   },
+}

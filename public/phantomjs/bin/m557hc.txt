@@ -1,0 +1,43 @@
+{
+    
+    xAxis : {
+      min : 0,
+      title : {
+        text : 'Person',
+        y : '2',
+        margin : 0
+      },
+      labels : {
+        
+      },
+      categories : ['Alexander Voyevodin','Alexey Popov','Anastasia Demchenko','Andrey Kucherov','Anton Kovalev','Denis Demianko','Dmitry Tatievskyi','Eugeniy Malysh','Irina Nikulova','James Simpson','James Simpson [Administrator]','Roman Radzhab','Viral Panchal','Vitaliy Grenkow','Vitaliy Kvas','Yuriy Kondrat']
+    },
+    yAxis : {
+      title : {
+        text : 'Number of Issues'
+      },
+      gridLineDashStyle : 'Dash'
+    },
+    series : [
+      {
+        name : 'Open',
+        data : [4,4,3,1,3,7,1,0,0,12,7,0,13,2,1,1],
+        color : '#0E63B2'
+      },
+      {
+        name : 'InProgress',
+        data : [3,2,1,2,2,4,0,2,0,0,1,2,1,2,1,0],
+        color : '#00C000'
+      },
+      {
+        name : 'ResolvedInPeriod',
+        data : [1,0,0,1,3,3,0,0,0,0,0,0,0,0,0,0],
+        color : '#7F7F7F'
+      },
+      {
+        name : 'ClosedInPeriod',
+        data : [4,0,2,1,6,8,0,1,2,1,0,2,2,5,8,0],
+        color : '#000000'
+      }
+    ]
+  }

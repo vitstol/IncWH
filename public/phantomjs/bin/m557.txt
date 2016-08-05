@@ -1,0 +1,108 @@
+{
+  
+    chart : {
+      plotBackgroundColor : null,
+      plotBorderWidth : null,
+      plotShadow : false,
+      type : 'column',
+      zoomType : 'xy'
+    },
+    title : {
+      text : ''
+    },
+    tooltip : {
+      formatter : '$TOOLTIPS-FUNC'
+    },
+    legend : {
+      layout : 'horizontal',
+      align : 'right',
+      verticalAlign : 'bottom',
+      y : 10,
+      floating : false,
+      borderWidth : 0,
+      itemDistance : 5,
+      backgroundColor : '#FFFFFF',
+      margin : 5,
+      shadow : false
+    },
+    plotOptions : {
+      column : {
+        lineWidth : 1,
+        dataLabels : {
+          enabled : true,
+          color : '#fff'
+        },
+        stacking : 'normal'
+      }
+    },
+    credits : {
+      enabled : false
+    },
+    xAxis : {
+      min : 0,
+      title : {
+        text : 'Person',
+        y : '2',
+        margin : 0
+      },
+      labels : {
+        
+      },
+      categories : ['Alexander Voyevodin','Alexey Popov','Anastasia Demchenko','Andrey Kucherov','Anton Kovalev','Denis Demianko','Dmitry Tatievskyi','Eugeniy Malysh','Irina Nikulova','James Simpson','James Simpson [Administrator]','Roman Radzhab','Viral Panchal','Vitaliy Grenkow','Vitaliy Kvas','Yuriy Kondrat']
+    },
+    yAxis : {
+      title : {
+        text : 'Number of Issues'
+      },
+      gridLineDashStyle : 'Dash'
+    },
+    series : [
+      {
+        name : 'Open',
+        data : [4,4,3,1,3,7,1,0,0,12,7,0,13,2,1,1],
+        color : '#0E63B2'
+      },
+      {
+        name : 'InProgress',
+        data : [3,2,1,2,2,4,0,2,0,0,1,2,1,2,1,0],
+        color : '#00C000'
+      },
+      {
+        name : 'ResolvedInPeriod',
+        data : [1,0,0,1,3,3,0,0,0,0,0,0,0,0,0,0],
+        color : '#7F7F7F'
+      },
+      {
+        name : 'ClosedInPeriod',
+        data : [4,0,2,1,6,8,0,1,2,1,0,2,2,5,8,0],
+        color : '#000000'
+      }
+    ]
+ ,
+    table: "{
+    data : [['Alexander Voyevodin',4,3,1,4],['Alexey Popov',4,2,0,0],['Anastasia Demchenko',3,1,0,2],['Andrey Kucherov',1,2,1,1],['Anton Kovalev',3,2,3,6],['Denis Demianko',7,4,3,8],['Dmitry Tatievskyi',1,0,0,0],['Eugeniy Malysh',0,2,0,1],['Irina Nikulova',0,0,0,2],['James Simpson',12,0,0,1],['James Simpson [Administrator]',7,1,0,0],['Roman Radzhab',0,2,0,2],['Viral Panchal',13,1,0,2],['Vitaliy Grenkow',2,2,0,5],['Vitaliy Kvas',1,1,0,8],['Yuriy Kondrat',1,0,0,0]],
+    height : 315,
+    disableVisualSelection : true,
+    colHeaders : [['AssigneeDisplayName'],['Open'],['InProgress'],['ResolvedInPeriod'],['ClosedInPeriod']],
+    contextMenu : true,
+    stretchH : 'all',
+    wordWrap : true,
+    formulas : true,
+    columnSorting : true,
+    renderAllRows : true,
+    className : 'htCenter htMiddle',
+    readOnly : true
+  }",
+    custom: {
+        reducedSizeLimits: {
+            "CATEGORY-DATA": 7,
+            "SERIES-1": 7,
+            "SERIES-2": 7,
+            "SERIES-3": 7,
+            "SERIES-4": 7
+        },
+        tooltip: {
+            type: 0
+        }
+    }
+}

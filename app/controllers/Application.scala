@@ -1,15 +1,19 @@
 package controllers
+import java.io.PrintWriter
 
+import scala.sys.process._
 import com.google.inject.Inject
 import play.api.libs.json._
 import play.api.mvc._
 import play.api.libs.ws.WSClient
 import net.liftweb.json._
+
+import scala.concurrent.{Await, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent._
 import scala.language.postfixOps
 import scala.util.parsing.json.{JSONArray, JSONObject}
-
+import scala.concurrent.duration._
+import scala.concurrent.Future
 class Application @Inject() (ws: WSClient) extends Controller {
   val URL_SLACK_ROOM = "https://hooks.slack.com/services/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"
   val URL_SESSION_KEY = "http://testapi.monitorIT247.com/api/clientsessions"
@@ -24,8 +28,8 @@ class Application @Inject() (ws: WSClient) extends Controller {
     ws.url(url1).get().map { request =>
       val fullResponse:JsValue = Json.parse(request.body)
       val advicePrev = fullResponse \\ "advice"
-      val advice = advicePrev.head.toString().replace("<p>","`")
-        .replace("</p>","`")
+      val advice = advicePrev.head.toString().replace("<p>","")
+        .replace("</p>","")
         .replace("<span style=font-size: 18px; font-family: arial; color: #2e75b6;>","")
         .replace("</span>","")
         .replace("<span style=font-size: 18px; font-family: arial; color: black;>","•")
@@ -38,9 +42,11 @@ class Application @Inject() (ws: WSClient) extends Controller {
         .replace("Advice","Advice")
       val Payload = Json.obj(
         "channel"->"@vitaliys",
-        "text"-> advice,
         "username"->"webhookbot",
-        "mrkdwn" ->true
+        "mrkdwn" ->true,
+        "token"->"files:write:user",
+        "ok"-> true,
+        "file"->"chart.png"
       )
 
 
@@ -78,13 +84,17 @@ class Application @Inject() (ws: WSClient) extends Controller {
         .replace("$CATEGORY-DATA",CATEGORY_DATA.last.toString())
         .replace("$TABLE-COLS",TABLE_COLS.head.toString())
         .replace("$TABLE-ROWS",TABLE_ROWS.head.toString())
-        .replace("{\"highcharts\":\"{","")
+        .replace("{\"highcharts\":\"","")
         .replace("\\n","")
         .replace("\"","")
         .replace("\\","'")
         .replace("$","")
-        .dropRight(1)
-        displayPreference
+        .replace("xAxis", "{xAxis")
+        .substring(715,1766)
+      new PrintWriter("j.son") { write(displayPreference); close() }
+      val term = "phantomjs /home/vitaliys/project/scala-bot/IncWH/public/phantomjs/bin/highcharts-convert.js -infile /home/vitaliys/project/scala-bot/IncWH/j.son -outfile chart.png"
+      val output = term.!!
+      output
     }
   }
 
@@ -92,11 +102,12 @@ class Application @Inject() (ws: WSClient) extends Controller {
     ws.url(URL_SESSION_KEY).post(PAYLOAD_FORARGUMENTS).map { request =>
       val parts: Array[String] = request.body.split(",")
       val sessionKey: Option[String] = parts.find(_.contains("SessionKey"))
+      mergeJson(sessionKey.getOrElse("").substring(14, 50))
       futureResponse(sessionKey.getOrElse("").substring(14, 50))
-  mergeJson(sessionKey.getOrElse("").substring(14, 50))
-      Ok(views.html.index( mergeJson(sessionKey.getOrElse("").substring(14, 50))
+      Ok("")
     }
   }
 
 
 }
+//Await.result(mergeJson(sessionKey.getOrElse("").substring(14, 50)), 1 seconds)
